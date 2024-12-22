@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 
 const Navbar: React.FC = () => {
   return (
@@ -11,6 +12,7 @@ const Navbar: React.FC = () => {
         <Link to="/" className="hover:text-secondary transition-colors">Home</Link>
         <Link to="/about" className="hover:text-secondary transition-colors">About</Link>
       </div>
+      <ThemeToggle />
     </nav>
   );
 };
