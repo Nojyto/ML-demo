@@ -1,27 +1,21 @@
-import { useState } from 'react';
+import React from 'react';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import About from './pages/About';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
 
-function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark', !isDarkMode);
-  };
-
+const App: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-text transition-colors">
-      <header className="text-center">
-        <h1 className="text-4xl font-heading mb-4">React</h1>
-        <p className="mb-6">Simple template.</p>
-        <button
-          onClick={toggleDarkMode}
-          className="px-4 py-2 bg-primary text-background rounded-lg hover:bg-secondary transition-colors"
-        >
-          Toggle {isDarkMode ? 'Light' : 'Dark'} Mode
-        </button>
-      </header>
-    </div>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
