@@ -1,21 +1,23 @@
+@import url('https://fonts.googleapis.com/css?family=Anta:700|Anta:400');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --text: 20 18% 7%;
-    --background: 0 20% 99%;
-    --primary: 25 18% 52%;
-    --secondary: 127 19% 73%;
-    --accent: 159 18% 64%;
+    --text: 260 69% 5%;
+    --background: 259 73% 94%;
+    --primary: 261 71% 27%;
+    --secondary: 310 71% 69%;
+    --accent: 328 71% 42%;
   }
   .dark {
-    --text: 20 17% 93%;
-    --background: 0 20% 1%;
-    --primary: 26 18% 48%;
-    --secondary: 127 19% 27%;
-    --accent: 160 18% 36%;
+    --text: 260 69% 95%;
+    --background: 259 73% 6%;
+    --primary: 261 71% 73%;
+    --secondary: 310 71% 31%;
+    --accent: 328 71% 58%;
   }
 
   body {

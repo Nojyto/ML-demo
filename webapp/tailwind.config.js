@@ -23,8 +23,8 @@ export default {
         '5xl': '4.210rem',
       },
       fontFamily: {
-        heading: ['Macondo', 'cursive'],
-        body: ['Exo', 'sans-serif'],
+        heading: ['Anta'],
+        body: ['Anta'],
       },
       fontWeight: {
         normal: '400',
