@@ -6,6 +6,8 @@ import Navbar from './components/Navbar';
 import About from './pages/About';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
+import Projects from './pages/Projects';
+import SentimentAnalysis from './pages/SentimentAnalysis';
 
 const App: React.FC = () => {
   return (
@@ -15,6 +17,8 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/projects/sentiment-analysis" element={<SentimentAnalysis />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
