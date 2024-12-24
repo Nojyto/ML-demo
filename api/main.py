@@ -1,16 +1,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.websockets import WebSocket, WebSocketDisconnect
+from motor.motor_asyncio import AsyncIOMotorClient
 import aioredis
 import os
 from dotenv import load_dotenv
 
-connected_clients = []
-
 load_dotenv()
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
+MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
 
 redis = aioredis.from_url(REDIS_URL)
+mongo_client = AsyncIOMotorClient(MONGO_URL)
+database = mongo_client.get_database()
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -34,5 +36,13 @@ async def test_redis():
     try:
         pong = await redis.ping()
         return {"status": "success", "message": "PONG" if pong else "No response"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@app.get("/test-mongo")
+async def test_mongo():
+    try:
+        await database.command("ping")
+        return {"status": "success", "message": "MongoDB is connected!"}
     except Exception as e:
         return {"status": "error", "message": str(e)}

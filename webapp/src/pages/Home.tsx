@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ping } from '../services/api';
+import { testMongo, testRedis } from '../services/api';
 
 const Home: React.FC = () => {
   const [pingResponse, setPingResponse] = useState<string | null>(null);
 
   const handlePing = async () => {
     try {
-      const response = await ping();
-      setPingResponse(response.message || JSON.stringify(response));
+      const rspRedis = await testRedis();
+      const rspMongo = await testMongo();
+      setPingResponse(`Redis: ${JSON.stringify(rspRedis)}, Mongo: ${JSON.stringify(rspMongo)}`);
     } catch (error) {
       setPingResponse('Failed to connect to the API.');
       console.error(error);

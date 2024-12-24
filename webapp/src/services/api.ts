@@ -8,8 +8,13 @@ const API = axios.create({
   },
 });
 
-export const ping = async () => {
+export const testRedis = async () => {
   const response = await API.get('/test-redis');
+  return response.data;
+};
+
+export const testMongo = async () => {
+  const response = await API.get('/test-mongo');
   return response.data;
 };
 

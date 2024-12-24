@@ -1,17 +1,4 @@
 services:
-  api:
-    build:
-      context: ./api
-    ports:
-      - "8000:8000"
-    environment:
-      - REDIS_URL=redis://redis:6379
-    volumes:
-      - ./api:/app
-    depends_on:
-      - redis
-    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-
   webapp:
     build:
       context: ./webapp
@@ -25,6 +12,29 @@ services:
       - api
     stdin_open: true
     tty: true
+    deploy:
+      resources:
+        limits:
+          memory: 32M
+
+  api:
+    build:
+      context: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MONGO_URL=mongodb://mongo:27017/mydatabase
+    volumes:
+      - ./api:/app
+    depends_on:
+      - redis
+      - mongo
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    deploy:
+      resources:
+        limits:
+          memory: 384M
 
   redis:
     image: redis:alpine
@@ -35,8 +45,28 @@ services:
     command:
       - redis-server
       - "--appendonly yes"
-      - "--maxmemory 128mb"
+      - "--maxmemory 64mb"
       - "--maxmemory-policy allkeys-lru"
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+
+  mongo:
+    image: mongo:5.0
+    expose:
+      - "27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    command: ["mongod", "--quiet"]
+    deploy:
+      resources:
+        limits:
+          memory: 384M
 
 volumes:
   redis_data:
+  mongo_data:
