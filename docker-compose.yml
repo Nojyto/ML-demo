@@ -1,0 +1,42 @@
+services:
+  api:
+    build:
+      context: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./api:/app
+    depends_on:
+      - redis
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  webapp:
+    build:
+      context: ./webapp
+      args:
+        VITE_API_BASE_URL: "http://localhost:8000"
+    ports:
+      - "3000:80"
+    volumes:
+      - ./webapp:/app
+    depends_on:
+      - api
+    stdin_open: true
+    tty: true
+
+  redis:
+    image: redis:alpine
+    expose:
+      - "6379"
+    volumes:
+      - redis_data:/data
+    command:
+      - redis-server
+      - "--appendonly yes"
+      - "--maxmemory 128mb"
+      - "--maxmemory-policy allkeys-lru"
+
+volumes:
+  redis_data:

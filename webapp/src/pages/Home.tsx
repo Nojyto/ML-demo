@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ping } from '../services/api';
 
 const Home: React.FC = () => {
+  const [pingResponse, setPingResponse] = useState<string | null>(null);
+
+  const handlePing = async () => {
+    try {
+      const response = await ping();
+      setPingResponse(response.message || JSON.stringify(response));
+    } catch (error) {
+      setPingResponse('Failed to connect to the API.');
+      console.error(error);
+    }
+  };
+
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-background text-text transition-colors pt-20">
       <div className="text-center max-w-4xl">
@@ -12,6 +25,18 @@ const Home: React.FC = () => {
         <Link to="/projects" className="px-6 py-3 bg-primary text-background rounded-lg shadow-lg hover:bg-secondary transition-colors text-lg">
           View All Projects
         </Link>
+        <button
+          onClick={handlePing}
+          className="mt-8 px-6 py-3 bg-primary text-background rounded-lg shadow-lg hover:bg-secondary transition-colors text-lg"
+        >
+          Test API Connection
+        </button>
+        {pingResponse && (
+          <div className="mt-6 p-4 bg-accent text-background rounded-lg shadow-lg">
+            <h2 className="text-2xl font-heading mb-4">Ping Response:</h2>
+            <p>{pingResponse}</p>
+          </div>
+        )}
       </div>
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="p-6 bg-accent text-background rounded-lg shadow-lg">
