@@ -170,4 +170,16 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-*.sample
+# Docker ignore
+.env.sample
+
+# Common
+README.md
+CHANGELOG.md
+docker-compose.yml
+Dockerfile
+
+# git
+.git
+.gitattributes
+.gitignore
