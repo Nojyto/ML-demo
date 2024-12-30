@@ -1,9 +1,11 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
 import aioredis
 import os
 from dotenv import load_dotenv
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from motor.motor_asyncio import AsyncIOMotorClient
+
+from inference import summarizer_model
 
 load_dotenv()
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
@@ -26,7 +28,12 @@ app.add_middleware(
 async def root():
     return {"message": "Backend is running!"}
 
-@app.get("/cache")
+@app.set("/set-cache")
+async def set_cache(key: str, value: str):
+    await redis.set(key, value)
+    return {"key": key, "value": value}
+
+@app.get("/get-cache")
 async def get_cache(key: str):
     value = await redis.get(key)
     return {"key": key, "value": value}
@@ -46,3 +53,18 @@ async def test_mongo():
         return {"status": "success", "message": "MongoDB is connected!"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+@app.get("/summarize-input")
+async def summarize_input(text: str, summary_mode: str = "short"):
+    try:
+        summary = summarizer_model.summarize(text, summary_mode)
+        if not summary:
+            raise ValueError("Unable to generate a summary for the given input.")
+        if len(text) < 10:
+            raise ValueError("Input text is too short to summarize.")
+
+        return {"summary": summary}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
